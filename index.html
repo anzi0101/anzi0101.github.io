@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>个人主页 · 网络工程方向</title>
+<style>
+  :root{
+    --bg:#0a1020;
+    --panel:#101a2e;
+    --panel-2:#16233b;
+    --line:rgba(120,160,220,.18);
+    --text:#e8eefb;
+    --muted:#93a4c2;
+    --accent:#37d5c3;
+    --accent-2:#5aa9ff;
+    --warn:#ffcc66;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:"Microsoft YaHei","Segoe UI",system-ui,-apple-system,sans-serif;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";
+    position:fixed;inset:0;z-index:-1;
+    background:
+      radial-gradient(680px 420px at 12% -8%, rgba(55,213,195,.16), transparent 70%),
+      radial-gradient(760px 460px at 88% 4%, rgba(90,169,255,.14), transparent 70%);
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+  /* ---------- 顶部导航 ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(14px);
+    background:rgba(10,16,32,.72);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;height:62px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.5px}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+  .nav-links{display:flex;gap:6px;flex-wrap:wrap}
+  .nav-links a{
+    color:var(--muted);text-decoration:none;font-size:14px;padding:6px 12px;border-radius:8px;
+    transition:.2s;
+  }
+  .nav-links a:hover{color:var(--text);background:rgba(255,255,255,.06)}
+
+  /* ---------- 首屏 ---------- */
+  .hero{padding:76px 0 56px;display:grid;grid-template-columns:1.5fr 1fr;gap:40px;align-items:center}
+  .eyebrow{font-family:Consolas,monospace;font-size:12px;letter-spacing:2px;color:var(--accent);text-transform:uppercase}
+  h1{font-size:clamp(34px,4.6vw,54px);line-height:1.22;margin:14px 0 8px;letter-spacing:-.5px}
+  h1 span{
+    background:linear-gradient(92deg,var(--accent),var(--accent-2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero-sub{font-size:17px;color:var(--muted);max-width:44ch}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+  .chip{
+    font-size:13px;padding:5px 12px;border-radius:999px;
+    border:1px solid var(--line);background:rgba(255,255,255,.04);color:#cfe0f7;
+  }
+  .cta{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:11px 22px;border-radius:12px;font-size:14px;font-weight:600;
+    text-decoration:none;cursor:pointer;border:1px solid transparent;transition:.2s;
+  }
+  .btn-primary{background:linear-gradient(120deg,var(--accent),var(--accent-2));color:#06121f}
+  .btn-primary:hover{filter:brightness(1.08);transform:translateY(-1px)}
+  .btn-ghost{border-color:var(--line);color:var(--text);background:transparent}
+  .btn-ghost:hover{background:rgba(255,255,255,.06)}
+
+  .portrait{
+    border:1px solid var(--line);border-radius:20px;padding:26px;
+    background:linear-gradient(160deg,var(--panel),rgba(16,26,46,.4));
+    font-family:Consolas,monospace;font-size:12.5px;color:var(--muted);
+  }
+  .portrait .ln{margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .portrait .k{color:var(--accent-2)}
+  .portrait .v{color:#dbe7f9}
+  .portrait .ok{color:var(--accent)}
+
+  /* ---------- 区块 ---------- */
+  section{padding:60px 0;border-top:1px solid var(--line)}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:28px}
+  .sec-num{font-family:Consolas,monospace;font-size:12px;color:var(--accent);letter-spacing:2px}
+  h2{font-size:24px;letter-spacing:-.3px}
+  .lead{color:var(--muted);font-size:15px;max-width:76ch}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+  .card{
+    border:1px solid var(--line);border-radius:16px;padding:22px;
+    background:var(--panel);transition:.25s;
+  }
+  .card:hover{border-color:rgba(55,213,195,.45);transform:translateY(-3px)}
+  .card h3{font-size:16px;margin-bottom:8px}
+  .card p{font-size:13.5px;color:var(--muted)}
+  .card .tag{
+    display:inline-block;margin-top:14px;font-family:Consolas,monospace;
+    font-size:11.5px;color:var(--accent);letter-spacing:1px;
+  }
+
+  /* 技能 */
+  .skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px 34px}
+  .skill{margin-bottom:6px}
+  .skill-top{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:7px}
+  .skill-top em{font-style:normal;color:var(--muted);font-family:Consolas,monospace;font-size:12px}
+  .bar{height:6px;border-radius:6px;background:rgba(255,255,255,.07);overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+
+  /* ---------- 工具箱 ---------- */
+  .tool{
+    border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:26px;margin-bottom:18px;
+  }
+  .tool h3{font-size:17px;display:flex;align-items:center;gap:10px}
+  .tool h3 s{text-decoration:none;font-family:Consolas,monospace;font-size:11px;color:var(--accent);border:1px solid rgba(55,213,195,.4);padding:2px 7px;border-radius:6px}
+  .tool .hint{font-size:13px;color:var(--muted);margin:6px 0 18px}
+  .field{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  label{font-size:12.5px;color:var(--muted);font-family:Consolas,monospace}
+  input{
+    background:#0c1526;border:1px solid var(--line);color:var(--text);
+    border-radius:10px;padding:10px 13px;font-size:14px;font-family:Consolas,monospace;
+    outline:none;transition:.2s;width:210px;
+  }
+  input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(55,213,195,.12)}
+  .exec{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px 20px;font-size:13.5px;cursor:pointer}
+  .exec:hover{border-color:var(--accent);color:var(--accent)}
+  .examples{margin-top:12px;font-size:12px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .examples a{color:var(--accent-2);cursor:pointer;text-decoration:none;border-bottom:1px dashed rgba(90,169,255,.4)}
+  .result{margin-top:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+  .kv{
+    border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:rgba(255,255,255,.025);
+  }
+  .kv .k{font-size:11.5px;color:var(--muted);font-family:Consolas,monospace;letter-spacing:.5px}
+  .kv .v{font-size:15px;font-family:Consolas,monospace;margin-top:4px;word-break:break-all}
+  .kv.hi{grid-column:1/-1;border-color:rgba(55,213,195,.4);background:rgba(55,213,195,.07)}
+  .kv.hi .v{color:var(--accent);font-size:16px}
+  .err{color:#ff9a9a;font-size:13px;margin-top:12px;font-family:Consolas,monospace}
+
+  table{border-collapse:collapse;width:100%;font-size:13px;margin-top:6px}
+  th,td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left}
+  th{color:var(--muted);font-weight:500;font-size:12px;font-family:Consolas,monospace}
+  td:first-child{font-family:Consolas,monospace;color:var(--accent-2)}
+
+  /* 求职方向 */
+  .targets{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+  .target{border-left:2px solid var(--accent);padding:14px 18px;background:rgba(255,255,255,.03);border-radius:0 12px 12px 0}
+  .target h4{font-size:14.5px;margin-bottom:4px}
+  .target p{font-size:13px;color:var(--muted)}
+
+  footer{border-top:1px solid var(--line);padding:34px 0 60px;color:var(--muted);font-size:13px}
+  footer .row{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+  .todo{
+    border:1px dashed rgba(255,204,102,.5);background:rgba(255,204,102,.06);
+    border-radius:12px;padding:14px 18px;font-size:13px;color:var(--warn);margin-bottom:26px;
+  }
+  .todo b{color:#ffe9b0}
+
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr;padding:52px 0 44px}
+    .portrait{order:-1}
+    .nav-links{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand"><span class="dot"></span>【你的名字】</div>
+    <nav class="nav-links">
+      <a href="#about">关于</a>
+      <a href="#skills">技能</a>
+      <a href="#works">作品</a>
+      <a href="#tools">工具箱</a>
+      <a href="#targets">求职方向</a>
+      <a href="#contact">联系</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- 首屏 -->
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Network Engineer / 网络工程方向</div>
+      <h1>把网络和系统<span>讲清楚</span>，<br>也把活儿干明白。</h1>
+      <p class="hero-sub">
+        本科 · 退役军人 · 河北衡水。正在系统学习 TCP/IP、路由交换与网络安全，
+        目标岗位为网络工程 / 网络安全 / 信息化运维。
+      </p>
+      <div class="chips">
+        <span class="chip">TCP/IP</span>
+        <span class="chip">路由交换</span>
+        <span class="chip">Wireshark 抓包</span>
+        <span class="chip">Python</span>
+        <span class="chip">Windows / Linux</span>
+      </div>
+      <div class="cta">
+        <a class="btn btn-primary" href="#tools">试一个在线工具 →</a>
+        <a class="btn btn-ghost" href="#works">看作品</a>
+      </div>
+    </div>
+
+    <div class="portrait">
+      <div class="ln"><span class="k">$</span> whoami</div>
+      <div class="ln">&nbsp;&nbsp;<span class="v">【你的名字】 / 网络工程方向</span></div>
+      <div class="ln"><span class="k">$</span> location</div>
+      <div class="ln">&nbsp;&nbsp;<span class="v">河北 · 衡水（可服从调剂）</span></div>
+      <div class="ln"><span class="k">$</span> status</div>
+      <div class="ln">&nbsp;&nbsp;<span class="ok">● 求职中</span> <span class="v">/ 可随时到岗</span></div>
+      <div class="ln"><span class="k">$</span> stack</div>
+      <div class="ln">&nbsp;&nbsp;<span class="v">网络 · 系统 · Python · 文档</span></div>
+      <div class="ln"><span class="k">$</span> contact</div>
+      <div class="ln">&nbsp;&nbsp;<span class="v">【手机号】 / 【邮箱】</span></div>
+      <div class="ln" style="margin-top:10px"><span class="k">$</span> <span class="ok">_</span></div>
+    </div>
+  </div>
+
+  <div class="todo">
+    <b>待你替换的内容：</b>搜索【】并替换成真实信息 —— 姓名、手机号、邮箱、教育经历、证书、
+    项目名称与成果数据。工具区（子网计算器 / 同网段判断）是已经写好的真实可用功能，不用改。
+  </div>
+
+  <!-- 关于 -->
+  <section id="about">
+    <div class="sec-head"><span class="sec-num">01</span><h2>关于我</h2></div>
+    <p class="lead">
+      【2~3 句自我介绍：一句话讲清你是谁、会什么、想做什么。例如：
+      2026 年退役，本科【专业】专业，在部队从事【通信/网络/信息化】相关工作 X 年，
+      熟悉网络设备配置与故障排查；现系统备考网络工程师，希望进入网络运维、信息安全或信息化管理岗位。】
+    </p>
+    <div class="cards" style="margin-top:24px">
+      <div class="card">
+        <h3>教育背景</h3>
+        <p>【学校名称】 · 【专业】 · 【学历】 · 【起止年份】</p>
+        <p style="margin-top:8px">主修：计算机网络、操作系统、数据库原理等。</p>
+      </div>
+      <div class="card">
+        <h3>部队经历</h3>
+        <p>【单位性质可脱敏】 · 【岗位】 · 【起止年份】</p>
+        <p style="margin-top:8px">【负责什么、解决了什么问题、结果如何，尽量写成可量化的句子。】</p>
+      </div>
+      <div class="card">
+        <h3>证书与考试</h3>
+        <p>· 网络工程师（软考中级）【在读/已通过】</p>
+        <p>· 【其他证书：计算机等级、安全、英语等】</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 技能 -->
+  <section id="skills">
+    <div class="sec-head"><span class="sec-num">02</span><h2>技能栈</h2></div>
+    <p class="lead">按「面试会被追问」的顺序排列，熟练度请按真实情况调整，不要虚标。</p>
+    <div class="skills" style="margin-top:26px">
+      <div>
+        <div class="skill"><div class="skill-top"><span>TCP/IP 与子网划分</span><em>熟练</em></div><div class="bar"><i style="width:82%"></i></div></div>
+        <div class="skill"><div class="skill-top"><span>路由与交换配置</span><em>熟练</em></div><div class="bar"><i style="width:75%"></i></div></div>
+        <div class="skill"><div class="skill-top"><span>Wireshark 抓包分析</span><em>掌握</em></div><div class="bar"><i style="width:68%"></i></div></div>
+      </div>
+      <div>
+        <div class="skill"><div class="skill-top"><span>Windows 运维 / 故障排查</span><em>熟练</em></div><div class="bar"><i style="width:80%"></i></div></div>
+        <div class="skill"><div class="skill-top"><span>Linux 基础命令与服务</span><em>掌握</em></div><div class="bar"><i style="width:62%"></i></div></div>
+        <div class="skill"><div class="skill-top"><span>Python 脚本自动化</span><em>掌握</em></div><div class="bar"><i style="width:60%"></i></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 作品 -->
+  <section id="works">
+    <div class="sec-head"><span class="sec-num">03</span><h2>作品</h2></div>
+    <p class="lead">三个位置，第一个已经做完，后两个按面试岗位往上补。作品比证书更能证明你干过活。</p>
+    <div class="cards" style="margin-top:26px">
+      <div class="card">
+        <h3>① 子网划分计算器（本页内可试用）</h3>
+        <p>纯前端实现的 IPv4 子网计算工具：输入 CIDR，输出网络地址、广播地址、可用主机范围、
+           主机数与二进制掩码，另附「两 IP 是否同网段」判断。无任何外部依赖，离线可用。</p>
+        <span class="tag">HTML · CSS · JavaScript · 无框架</span>
+      </div>
+      <div class="card">
+        <h3>② 【待补：抓包分析报告】</h3>
+        <p>建议做：一次 DNS / TCP 三次握手 / HTTP 请求的完整抓包，标注每层报文，
+           配 6~8 张截图和一段结论。文件夹里放 .pcapng 原文件，面试时能现场打开。</p>
+        <span class="tag">Wireshark · pcapng · 文档</span>
+      </div>
+      <div class="card">
+        <h3>③ 【待补：Python 运维小工具】</h3>
+        <p>建议做：批量 Ping 与端口存活巡检脚本，输出 Excel/HTML 报表。
+           这类工具最贴近运维岗日常，讲得清就很有说服力。</p>
+        <span class="tag">Python · 自动化 · 报表</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 工具箱 -->
+  <section id="tools">
+    <div class="sec-head"><span class="sec-num">04</span><h2>工具区 · 真实可用</h2></div>
+    <p class="lead">下面两个工具是本页自带的，双击打开就能用，不需要联网。</p>
+
+    <div class="tool" style="margin-top:26px">
+      <h3>IPv4 子网计算器 <s>LIVE</s></h3>
+      <p class="hint">支持 192.168.1.10/24、192.168.1.10/255.255.255.0、192.168.1.10 24 三种写法。</p>
+      <div class="field">
+        <label>输入</label>
+        <input id="cidrInput" value="192.168.1.10/24" placeholder="如 10.0.5.0/22" />
+        <button class="exec" onclick="calcSubnet()">计算</button>
+      </div>
+      <div class="examples">
+        <span>试试：</span>
+        <a onclick="quick('192.168.1.10/24')">/24</a>
+        <a onclick="quick('10.0.5.0/22')">/22</a>
+        <a onclick="quick('172.16.0.1/30')">/30</a>
+        <a onclick="quick('200.1.1.1/31')">/31</a>
+        <a onclick="quick('8.8.8.8/32')">/32</a>
+      </div>
+      <div id="subnetOut" class="result"></div>
+      <div id="subnetErr" class="err"></div>
+    </div>
+
+    <div class="tool">
+      <h3>同网段判断 <s>LIVE</s></h3>
+      <p class="hint">输入两个 IP 与前缀长度，判断它们是否落在同一子网内 —— 面试常问的那道题。</p>
+      <div class="field">
+        <label>IP A</label><input id="ipA" value="192.168.1.10" style="width:170px" />
+        <label>IP B</label><input id="ipB" value="192.168.1.200" style="width:170px" />
+        <label>前缀</label><input id="pfx" value="24" style="width:80px" />
+        <button class="exec" onclick="sameNet()">判断</button>
+      </div>
+      <div id="sameOut" class="result"></div>
+      <div id="sameErr" class="err"></div>
+    </div>
+
+    <div class="tool">
+      <h3>常用端口速查 <s>REF</s></h3>
+      <table>
+        <tr><th>端口</th><th>协议</th><th>用途</th></tr>
+        <tr><td>20 / 21</td><td>TCP</td><td>FTP 数据 / 控制</td></tr>
+        <tr><td>22</td><td>TCP</td><td>SSH 远程登录</td></tr>
+        <tr><td>23</td><td>TCP</td><td>Telnet（明文，建议禁用）</td></tr>
+        <tr><td>25 / 110 / 143</td><td>TCP</td><td>SMTP / POP3 / IMAP 邮件</td></tr>
+        <tr><td>53</td><td>UDP/TCP</td><td>DNS 域名解析</td></tr>
+        <tr><td>80 / 443</td><td>TCP</td><td>HTTP / HTTPS</td></tr>
+        <tr><td>161 / 162</td><td>UDP</td><td>SNMP 查询 / 告警</td></tr>
+        <tr><td>3389</td><td>TCP</td><td>RDP 远程桌面</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- 求职方向 -->
+  <section id="targets">
+    <div class="sec-head"><span class="sec-num">05</span><h2>求职方向</h2></div>
+    <p class="lead">退役军人身份在体制内和国企是加分项，简历上要把「服役年限 + 立功受奖 + 岗位相关技能」写实。</p>
+    <div class="targets" style="margin-top:26px">
+      <div class="target"><h4>网络运维 / 信息化岗</h4><p>医院、学校、事业单位的信息中心，央国企信息部。</p></div>
+      <div class="target"><h4>网络安全岗</h4><p>等保测评、安全运维、驻场工程师，需补一份安全方向作品。</p></div>
+      <div class="target"><h4>银行 / 农商行科技岗</h4><p>偏系统运维与机房管理，笔试常考计算机网络与操作系统。</p></div>
+      <div class="target"><h4>事业单位 / 公务员专设岗</h4><p>河北退役军人专项岗位，关注衡水及周边地市的招考公告。</p></div>
+    </div>
+  </section>
+
+  <footer id="contact">
+    <div class="row">
+      <div>
+        <div style="color:var(--text);font-weight:600;margin-bottom:8px">【你的名字】 · 网络工程方向</div>
+        手机：【手机号】　邮箱：【邮箱】　现居：河北 衡水
+      </div>
+      <div style="font-family:Consolas,monospace;font-size:12px;color:#5d6f8c">
+        built with HTML · CSS · JavaScript<br>No framework, no build step, offline ready.
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  /* ---------- 基础转换 ---------- */
+  function ipToInt(str){
+    if(typeof str !== 'string') return null;
+    const parts = str.trim().split('.');
+    if(parts.length !== 4) return null;
+    let v = 0;
+    for(const p of parts){
+      if(!/^\d{1,3}$/.test(p)) return null;
+      const n = Number(p);
+      if(n > 255) return null;
+      v = v * 256 + n;
+    }
+    return v >>> 0;
+  }
+  function intToIp(v){
+    return [(v >>> 24) & 255, (v >>> 16) & 255, (v >>> 8) & 255, v & 255].join('.');
+  }
+  function maskFromPrefix(p){
+    if(p < 0 || p > 32) return null;
+    if(p === 0) return 0;
+    return (0xFFFFFFFF << (32 - p)) >>> 0;
+  }
+  function prefixFromMask(m){
+    if(m === 0) return 0;
+    let p = 0, x = m >>> 0;
+    while(x & 0x80000000){ p++; x = (x << 1) >>> 0; }
+    // 校验是否为连续掩码
+    if(maskFromPrefix(p) !== (m >>> 0)) return null;
+    return p;
+  }
+  function maskBinary(m){
+    return [(m >>> 24) & 255, (m >>> 16) & 255, (m >>> 8) & 255, m & 255]
+      .map(b => b.toString(2).padStart(8, '0')).join('.');
+  }
+
+  /* ---------- 解析输入 ---------- */
+  function parseInput(raw){
+    const s = raw.trim();
+    if(!s) return { error: '请输入内容，例如 192.168.1.10/24' };
+    let ipStr, pfxStr;
+    if(s.includes('/')){
+      const parts = s.split('/');
+      if(parts.length !== 2) return { error: '格式不对，只能有一个 “/”' };
+      ipStr = parts[0].trim(); pfxStr = parts[1].trim();
+    } else {
+      const parts = s.split(/\s+/);
+      if(parts.length === 2){ ipStr = parts[0]; pfxStr = parts[1]; }
+      else return { error: '缺少掩码，请写成 IP/前缀 或 “IP 前缀”' };
+    }
+    const ip = ipToInt(ipStr);
+    if(ip === null) return { error: 'IP 地址无效：' + ipStr };
+    let prefix = null;
+    if(/^\d{1,2}$/.test(pfxStr)){
+      prefix = Number(pfxStr);
+      if(prefix > 32) return { error: '前缀长度必须在 0~32 之间' };
+    } else {
+      const m = ipToInt(pfxStr);
+      if(m === null) return { error: '掩码无效：' + pfxStr };
+      prefix = prefixFromMask(m);
+      if(prefix === null) return { error: '掩码必须是连续的 1，例如 255.255.255.0' };
+    }
+    return { ip, prefix };
+  }
+
+  function kv(k, v, hi){
+    return '<div class="kv' + (hi ? ' hi' : '') + '"><div class="k">' + k + '</div><div class="v">' + v + '</div></div>';
+  }
+
+  /* ---------- 子网计算 ---------- */
+  function calcSubnet(){
+    const out = document.getElementById('subnetOut');
+    const errBox = document.getElementById('subnetErr');
+    out.innerHTML = ''; errBox.textContent = '';
+    const r = parseInput(document.getElementById('cidrInput').value);
+    if(r.error){ errBox.textContent = '× ' + r.error; return; }
+
+    const { ip, prefix } = r;
+    const mask = maskFromPrefix(prefix);
+    const network = (ip & mask) >>> 0;
+    const broadcast = (network | (~mask >>> 0)) >>> 0;
+    const total = Math.pow(2, 32 - prefix);
+
+    let hosts, rangeText;
+    if(prefix <= 30){
+      const first = network + 1;
+      const last = broadcast - 1;
+      hosts = total - 2;
+      rangeText = intToIp(first) + '  ~  ' + intToIp(last);
+    } else if(prefix === 31){
+      hosts = 2; // RFC 3021 点对点
+      rangeText = intToIp(network) + '  ~  ' + intToIp(broadcast) + '（/31 点对点）';
+    } else {
+      hosts = 1;
+      rangeText = intToIp(ip) + '（/32 单点）';
+    }
+
+    out.innerHTML =
+      kv('网络地址 Network', intToIp(network), true) +
+      kv('子网掩码 Mask', intToIp(mask)) +
+      kv('广播地址 Broadcast', intToIp(broadcast)) +
+      kv('可用主机范围', rangeText) +
+      kv('可用主机数', String(hosts)) +
+      kv('前缀长度', '/' + prefix + '（' + prefix + ' 位网络位）') +
+      kv('二进制掩码', maskBinary(mask)) +
+      kv('CIDR 回写', intToIp(network) + '/' + prefix + '（规范化）');
+  }
+
+  function quick(v){
+    document.getElementById('cidrInput').value = v;
+    calcSubnet();
+  }
+
+  /* ---------- 同网段判断 ---------- */
+  function sameNet(){
+    const out = document.getElementById('sameOut');
+    const errBox = document.getElementById('sameErr');
+    out.innerHTML = ''; errBox.textContent = '';
+
+    const a = ipToInt(document.getElementById('ipA').value);
+    const b = ipToInt(document.getElementById('ipB').value);
+    const p = document.getElementById('pfx').value.trim();
+
+    if(a === null){ errBox.textContent = '× IP A 无效'; return; }
+    if(b === null){ errBox.textContent = '× IP B 无效'; return; }
+    if(!/^\d{1,2}$/.test(p) || Number(p) > 32){ errBox.textContent = '× 前缀必须是 0~32 的整数'; return; }
+
+    const prefix = Number(p);
+    const mask = maskFromPrefix(prefix);
+    const na = (a & mask) >>> 0;
+    const nb = (b & mask) >>> 0;
+
+    out.innerHTML =
+      kv('IP A 所在网络', intToIp(na)) +
+      kv('IP B 所在网络', intToIp(nb)) +
+      kv('掩码', intToIp(mask) + ' （/' + prefix + '）') +
+      kv('结论', na === nb ? '同一网段 ✔' : '不同网段 ✘', true) +
+      kv('说明', na === nb
+        ? '两台主机可直接通信，无需路由转发。'
+        : '需经过路由器/三层交换机转发，且中间设备需有可达路由。');
+  }
+
+  /* ---------- 初始化 ---------- */
+  calcSubnet();
+  sameNet();
+</script>
+</body>
+</html>
